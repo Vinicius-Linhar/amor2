@@ -119,7 +119,7 @@ export default function App() {
   });
 
   const audioRef = useRef(null);
-  const apiKey = "AIzaSyCxRmUdNFbXw1-DOhKo8TRoZaNrrRUgMiE";
+  const apiKey = "AIzaSyCV713q6bD-2IKgpyaG3vU7H8JrrCqHqQ4";
 
   const startDate = new Date('2025-03-12T00:00:00');
 
