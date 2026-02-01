@@ -210,7 +210,7 @@ export default function App() {
     } catch (e) { console.error("Erro ao arquivar:", e); }
   };
 
-  const callGemini = async (payload, endpoint = 'generateContent', model = 'gemini-2.0-flash-exp', retries = 0) => {
+  const callGemini = async (payload, endpoint = 'generateContent', model = 'gemini-2.0-flash', retries = 0) => {
     try {
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:${endpoint}?key=${apiKey}`, {
         method: 'POST',
@@ -256,7 +256,7 @@ export default function App() {
           ]
         }],
         generationConfig: { responseModalities: ['TEXT', 'IMAGE'] }
-      }, 'generateContent', 'gemini-2.0-flash-exp');
+      }, 'generateContent', 'gemini-2.0-flash');
 
       const imageB64 = result.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
       if (imageB64) {
@@ -289,7 +289,7 @@ export default function App() {
       const data = await callGemini({
         contents: [{ parts: [{ text: prompt }] }],
         systemInstruction: { parts: [{ text: t.aiSystem }] }
-      }, 'generateContent', 'gemini-2.0-flash-exp');
+      }, 'generateContent', 'gemini-2.0-flash');
 
       const res = data.candidates?.[0]?.content?.parts?.[0]?.text || t.letterLove;
       setMoodResponse(res);
@@ -311,7 +311,7 @@ export default function App() {
           responseModalities: ["AUDIO"],
           speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Aoede" } } }
         }
-      }, 'generateContent', 'gemini-2.0-flash-exp');
+      }, 'generateContent', 'gemini-2.0-flash');
       const pcm = data.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
       if (pcm && audioRef.current) {
         const byteCharacters = atob(pcm);
