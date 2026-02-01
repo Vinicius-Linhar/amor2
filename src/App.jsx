@@ -55,7 +55,8 @@ const translations = {
     missings: ['Mínimo', 'Muito', 'Demais', 'Imenso', 'Infinito'],
     aiPrompt: "Namorada check-in: Humor {mood}, Comida {food}, Água {water}, Saudades {missing}, Bateria {battery}. Destaque: {highlight}. Responde fofo em Português.",
     aiSystem: "És o namorado mais carinhoso. Resposta curta em Português.",
-    voicePrompt: "Diz fofamente em Português: {text}"
+    voicePrompt: "Diz fofamente em Português: {text}",
+    download: "Baixar Imagem"
   },
   th: {
     trophy: "บันทึกรักนิรันดร์",
@@ -85,7 +86,8 @@ const translations = {
     missings: ['นิดหน่อย', 'มาก', 'มากๆ', 'ที่สุด', 'ไม่มีที่สิ้นสุด'],
     aiPrompt: "แฟนสาวเช็คอิน: อารมณ์ {mood}, อาหาร {food}, น้ำ {water}, ความคิดถึง {missing}, พลังงาน {battery}. ไฮไลท์: {highlight}. ตอบกลับน่ารักๆ เป็นภาษาไทย",
     aiSystem: "คุณเป็นแฟนหนุ่มที่น่ารักที่สุด ตอบกลับสั้นๆ หวานๆ เป็นภาษาไทย",
-    voicePrompt: "พูดด้วยน้ำเสียงน่ารักๆ เป็นภาษาไทย: {text}"
+    voicePrompt: "พูดด้วยน้ำเสียงน่ารักๆ เป็นภาษาไทย: {text}",
+    download: "ดาวน์โหลดรูปภาพ"
   }
 };
 
@@ -190,6 +192,15 @@ export default function App() {
     });
   };
 
+  const downloadImage = (base64Str) => {
+    const link = document.createElement('a');
+    link.href = base64Str;
+    link.download = `retrato-amor-${Date.now()}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const logInteraction = async (type, content, extraData = {}) => {
     if (!user) return;
     try {
@@ -247,7 +258,7 @@ export default function App() {
         generationConfig: { responseModalities: ['TEXT', 'IMAGE'] }
       }, 'generateContent', 'gemini-2.5-flash-image');
 
-      const imageB64 = result.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+      const imageB64 = result.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
       if (imageB64) {
         const compP = await compressImage(imageB64, 500);
         const compO1 = await compressImage(b64_1_raw, 300);
@@ -376,7 +387,7 @@ export default function App() {
                 <label className="group flex flex-col items-center justify-center p-6 border-2 border-dashed border-rose-200 rounded-3xl cursor-pointer hover:bg-rose-50 transition-all">{photo2 ? <span className="text-[10px] text-rose-400 font-black uppercase">OK ✓</span> : <Upload size={20} className="mb-2 text-rose-300" />}<input type="file" className="hidden" accept="image/*" onChange={(e) => setPhoto2(e.target.files[0])} /></label>
               </div>
               <button onClick={generatePortrait} disabled={!photo1 || !photo2 || isGeneratingPortrait} className="w-full py-4 bg-gradient-to-r from-amber-400 to-rose-400 text-white rounded-2xl font-black shadow-lg disabled:opacity-50 transition-all uppercase text-[10px] tracking-[0.2em]">{isGeneratingPortrait ? <RefreshCw className="animate-spin" /> : t.generatePortrait}</button>
-              {generatedPortrait && (<div className="mt-8 p-4 bg-rose-50 rounded-[2.5rem] shadow-inner animate-in fade-in border border-rose-100"><img src={generatedPortrait} alt="Eterno" className="rounded-[2rem] shadow-2xl mx-auto max-w-full border-4 border-white" /></div>)}
+              {generatedPortrait && (<div className="mt-8 p-4 bg-rose-50 rounded-[2.5rem] shadow-inner animate-in fade-in border border-rose-100"><img src={generatedPortrait} alt="Eterno" className="rounded-[2rem] shadow-2xl mx-auto max-w-full border-4 border-white" /><button onClick={() => downloadImage(generatedPortrait)} className="mt-4 px-6 py-2 bg-white text-rose-500 font-bold rounded-full shadow-md text-xs uppercase tracking-widest hover:bg-rose-50 flex items-center gap-2 mx-auto"><Upload className="rotate-180" size={14} /> {t.download}</button></div>)}
             </div>
           </div>
         )}
